@@ -34,7 +34,7 @@ use crate::{
 
 const FIXTURE: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/tests/fixtures/summit-b1651e7-checkpoint.json"
+    "/tests/fixtures/summit-69ca74d-checkpoint.json"
 ));
 // Deterministic gzip of the two zero-filled end-of-archive tar blocks.
 const EMPTY_TAR_GZ: &[u8] = &[

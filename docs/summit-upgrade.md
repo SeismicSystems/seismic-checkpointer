@@ -12,7 +12,7 @@ in the new test module; the decoder upgrade comes from the dependency pin.
 ## Reproducible dependency stack
 
 - Summit types source:
-  `git+https://github.com/SeismicSystems/summit.git?rev=b1651e7eaef0378815359ffdc4631316f78f03c4#b1651e7eaef0378815359ffdc4631316f78f03c4`
+  `git+https://github.com/SeismicSystems/summit.git?rev=69ca74de005f695c7f6f070655d481fb6473425a#69ca74de005f695c7f6f070655d481fb6473425a`
 - All eleven direct Commonware constraints: `=2026.9.0`.
 - Metadata confirms **19 Commonware packages, all 2026.9.0**, one Summit types
   revision, and no local-path dependencies.
@@ -72,7 +72,7 @@ execute Reth, or access live Summit, deployment directories, or cloud storage.
 ## Fixture handoff to checkpoint-app
 
 Reuse the exact bytes and provenance in
-[`tests/fixtures/summit-b1651e7-checkpoint.json`](../tests/fixtures/summit-b1651e7-checkpoint.json).
+[`tests/fixtures/summit-69ca74d-checkpoint.json`](../tests/fixtures/summit-69ca74d-checkpoint.json).
 See the [fixture documentation](../tests/fixtures/README.md) for generation and
 old-decoder control instructions.
 

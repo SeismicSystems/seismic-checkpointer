@@ -13,7 +13,7 @@ fn main() -> Result<()> {
         bail!("usage: cargo run --locked --example generate_checkpoint_fixture -- [--check]");
     }
     let path =
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/summit-b1651e7-checkpoint.json");
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/summit-69ca74d-checkpoint.json");
     let output =
         format!("{}\n", serde_json::to_string_pretty(&checkpoint_fixture::generate_fixture())?);
     if args == ["--check"] {
