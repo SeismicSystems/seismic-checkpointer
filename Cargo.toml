@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 # Summit SSZ types used to verify the checkpoint artifacts against Reth before publication.
-summit-types = { git = "https://github.com/SeismicSystems/summit.git", rev = "b1651e7eaef0378815359ffdc4631316f78f03c4" }
+summit-types = { git = "https://github.com/SeismicSystems/summit.git", rev = "69ca74de005f695c7f6f070655d481fb6473425a" }
 ethereum_ssz = "0.9.0"
 
 # summit-types at the pinned revision was written against commonware-* 2026.9.0.

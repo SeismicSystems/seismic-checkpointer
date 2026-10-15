@@ -36,8 +36,21 @@ def main() -> None:
         # manager decoder and its Cargo manifest/lockfile remain unmodified.
         producer = (ROOT / "tests/support/checkpoint_fixture.rs").read_text()
         replacements = [
-            ("b1651e7eaef0378815359ffdc4631316f78f03c4", OLD_SUMMIT),
+            ("69ca74de005f695c7f6f070655d481fb6473425a", OLD_SUMMIT),
             ('"commonware_version": "2026.9.0"', '"commonware_version": "2026.7.0"'),
+            # The old Summit still had `skip_timeout_views`, and its payloads carried
+            # the block time as a millisecond `timestamp` with no `extraData` part.
+            (
+                "        activity_timeout_views: 10,\n",
+                "        activity_timeout_views: 10,\n        skip_timeout_views: 5,\n",
+            ),
+            ("    payload_with_timestamp_millis,\n", ""),
+            (
+                "    // A Seismic payload carries its block time as the stock seconds `timestamp`\n"
+                "    // plus the sub-second part in the first two bytes of `extraData`.\n"
+                "    let payload = payload_with_timestamp_millis(payload, 1_700_000_000_000);\n",
+                "    execution.timestamp = 1_700_000_000;\n",
+            ),
             ("    protocol_params::ProtocolParam,\n", ""),
             ("        max_validator_count: 256,\n", ""),
             ("        genesis.max_validator_count,\n", ""),
@@ -49,7 +62,7 @@ def main() -> None:
         for old, new in replacements:
             producer = replace_once(producer, old, new)
         (work / "src/checkpoint/old_fixture.rs").write_text(producer)
-        fixture = ROOT / "tests/fixtures/summit-b1651e7-checkpoint.json"
+        fixture = ROOT / "tests/fixtures/summit-69ca74d-checkpoint.json"
         (work / "new-checkpoint.json").write_bytes(fixture.read_bytes())
         manager = work / "src/checkpoint/manager.rs"
         with manager.open("a") as output:

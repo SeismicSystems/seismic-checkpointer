@@ -1,13 +1,13 @@
 # Summit checkpoint wire fixture
 
-`summit-b1651e7-checkpoint.json` contains the complete JSON `getCheckpoint`
+`summit-69ca74d-checkpoint.json` contains the complete JSON `getCheckpoint`
 **result** under `response` (epoch, digest, checkpoint bytes, last-block bytes,
 finalized-header bytes), plus producer provenance, expected identities and the
 synthetic genesis configuration needed to verify the signature.
 
 ## Producer and scope
 
-- Summit: `b1651e7eaef0378815359ffdc4631316f78f03c4`
+- Summit: `69ca74de005f695c7f6f070655d481fb6473425a`
 - Commonware: `2026.9.0` (resolved by this repository's `Cargo.lock`)
 - Rust: `1.95.0` (`rust-toolchain.toml`)
 - Generator: `examples/generate_checkpoint_fixture.rs`, with shared test-only

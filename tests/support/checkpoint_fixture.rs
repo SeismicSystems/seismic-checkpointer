@@ -27,13 +27,14 @@ use summit_types::{
     checkpoint::{verify_checkpoint_chain, Checkpoint},
     consensus_state::ConsensusState,
     genesis::{Genesis, GenesisValidator},
+    payload_with_timestamp_millis,
     protocol_params::ProtocolParam,
     rpc::CheckpointRes,
     scheme::MultisigScheme,
     Block, Digest, FinalizedHeader, Header,
 };
 
-pub const SUMMIT_REVISION: &str = "b1651e7eaef0378815359ffdc4631316f78f03c4";
+pub const SUMMIT_REVISION: &str = "69ca74de005f695c7f6f070655d481fb6473425a";
 pub const CHECKPOINT_HEIGHT: u64 = 8;
 pub const EXECUTION_HASH: [u8; 32] = [0x18; 32];
 pub const RETH_STATE_ROOT: [u8; 32] = [0x28; 32];
@@ -69,7 +70,6 @@ pub fn checkpoint_state() -> (Genesis, ConsensusState) {
         notarization_timeout_ms: 1_000,
         nullify_timeout_ms: 1_000,
         activity_timeout_views: 10,
-        skip_timeout_views: 5,
         max_message_size_bytes: 1_048_576,
         namespace: "checkpointer-new-format-fixture-v1".into(),
         validator_minimum_stake: 32_000_000_000,
@@ -170,7 +170,9 @@ pub fn terminal_artifacts(
     execution.block_hash = TERMINAL_EXECUTION_HASH.into();
     execution.parent_hash = state.get_forkchoice().head_block_hash;
     execution.state_root = [0x29; 32].into();
-    execution.timestamp = 1_700_000_000;
+    // A Seismic payload carries its block time as the stock seconds `timestamp`
+    // plus the sub-second part in the first two bytes of `extraData`.
+    let payload = payload_with_timestamp_millis(payload, 1_700_000_000_000);
     let block = Block::compute_digest(
         state.get_head_digest(),
         state.get_latest_height() + 1,
