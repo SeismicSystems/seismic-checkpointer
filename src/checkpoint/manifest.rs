@@ -124,7 +124,7 @@ mod tests {
     #[tokio::test]
     async fn file_hash_is_calculated_over_exact_bytes() {
         let unique = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
-        let path = std::env::temp_dir().join(format!("summit-checkpointer-hash-{unique}"));
+        let path = std::env::temp_dir().join(format!("seismic-checkpointer-hash-{unique}"));
         tokio::fs::write(&path, b"abc").await.unwrap();
 
         let digest = sha256_file(&path).await.unwrap();
