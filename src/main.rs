@@ -3,7 +3,7 @@ use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
-use summit_checkpointer::{
+use seismic_checkpointer::{
     BlockMonitor, CheckpointManager, Cli, Config, Result, RpcClient, RpcServer, StateTracker,
 };
 
@@ -18,7 +18,7 @@ async fn main() -> Result<()> {
     // Initialize logging
     init_logging(&config)?;
 
-    tracing::info!("Summit-Checkpointer starting up");
+    tracing::info!("Seismic-Checkpointer starting up");
     tracing::info!(
         "Configuration: reth_url={}, epoch_blocks={}, output_dir={:?}",
         config.reth.rpc_url,
@@ -90,7 +90,7 @@ async fn main() -> Result<()> {
     tracing::info!("Saving final state...");
     state_tracker.save().await?;
 
-    tracing::info!("Summit-Checkpointer shutdown complete");
+    tracing::info!("Seismic-Checkpointer shutdown complete");
 
     Ok(())
 }

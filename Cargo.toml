@@ -1,5 +1,5 @@
 [package]
-name = "summit-checkpointer"
+name = "seismic-checkpointer"
 version = "0.1.0"
 edition = "2021"
 
@@ -30,7 +30,12 @@ hex = "0.4"
 tokio = { version = "1.42", features = ["full"] }
 
 # HTTP client for RPC
-reqwest = { version = "0.12", features = ["json"] }
+# default-features = false drops reqwest's native-tls, and with it the host's
+# OpenSSL, from the binary: prebuilt releases must depend on nothing but glibc.
+# native-roots keeps trusting the system CA store, as native-tls did, so a
+# private CA on an RPC endpoint still works; system-proxy keeps honouring
+# HTTP(S)_PROXY. Both are pure Rust.
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls-native-roots", "system-proxy"] }
 
 # JSON-RPC client
 jsonrpsee = { version = "0.26.0", features = ["http-client", "client-core", "server", "macros"] }

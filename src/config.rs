@@ -65,7 +65,7 @@ pub struct LoggingConfig {
 
 /// CLI argument parser
 #[derive(Parser, Debug)]
-#[command(name = "summit-checkpointer")]
+#[command(name = "seismic-checkpointer")]
 #[command(version, about = "Monitor reth and create checkpoints at epoch boundaries")]
 pub struct Cli {
     /// Path to configuration file
@@ -317,7 +317,7 @@ mod tests {
 
     #[test]
     fn rpc_server_preserves_existing_default_socket_address() {
-        let cli = Cli::try_parse_from(["summit-checkpointer"]).unwrap();
+        let cli = Cli::try_parse_from(["seismic-checkpointer"]).unwrap();
 
         assert_eq!(
             cli.rpc_socket_address(),
@@ -328,7 +328,7 @@ mod tests {
     #[test]
     fn rpc_server_accepts_custom_ipv4_socket_address() {
         let cli = Cli::try_parse_from([
-            "summit-checkpointer",
+            "seismic-checkpointer",
             "--bind-address",
             "127.0.0.1",
             "--port",
@@ -345,7 +345,7 @@ mod tests {
     #[test]
     fn rpc_server_accepts_custom_ipv6_socket_address() {
         let cli = Cli::try_parse_from([
-            "summit-checkpointer",
+            "seismic-checkpointer",
             "--bind-address",
             "::1",
             "--port",
@@ -362,7 +362,7 @@ mod tests {
     #[test]
     fn rpc_server_rejects_invalid_bind_address() {
         let result =
-            Cli::try_parse_from(["summit-checkpointer", "--bind-address", "not-an-ip-address"]);
+            Cli::try_parse_from(["seismic-checkpointer", "--bind-address", "not-an-ip-address"]);
 
         assert!(result.is_err());
     }
