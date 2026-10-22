@@ -1,6 +1,7 @@
 pub mod checkpoint;
 pub mod config;
 pub mod error;
+pub mod metrics;
 pub mod monitor;
 pub mod rpc;
 mod schedule;

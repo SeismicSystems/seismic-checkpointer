@@ -28,6 +28,13 @@ async fn main() -> Result<()> {
 
     // Load state tracker
     let state_tracker = Arc::new(StateTracker::load(&config.state.state_file).await?);
+    // Metrics are served on the RPC listener; seed the last-checkpoint gauges
+    // from persisted state so a restart does not report zero.
+    seismic_checkpointer::metrics::init();
+    seismic_checkpointer::metrics::record_existing_checkpoint(
+        state_tracker.last_epoch().await,
+        state_tracker.last_block().await,
+    );
 
     // Create RPC clients
     let rpc_client = RpcClient::new(&config)?;
