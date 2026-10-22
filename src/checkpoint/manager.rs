@@ -94,6 +94,7 @@ impl CheckpointManager {
         }
 
         tracing::info!(checkpoint_name, epoch, checkpoint_block, "Starting checkpoint");
+        let started = std::time::Instant::now();
         let result = self
             .create_checkpoint_at(
                 &working_path,
@@ -103,6 +104,7 @@ impl CheckpointManager {
             )
             .await;
         if let Err(error) = result {
+            crate::metrics::record_checkpoint_error();
             if let Err(cleanup_error) = tokio::fs::remove_dir_all(&working_path).await {
                 tracing::warn!(
                     path = ?working_path,
@@ -115,6 +117,7 @@ impl CheckpointManager {
 
         tokio::fs::rename(&working_path, &final_path).await?;
         self.state_tracker.update_last_checkpoint(epoch, checkpoint_block).await?;
+        crate::metrics::record_checkpoint_ok(epoch, checkpoint_block, started.elapsed());
 
         // Cleanup old snapshots if retention limit is set
         if let Err(e) = self.cleanup_old_snapshots().await {

@@ -69,15 +69,24 @@ impl RpcServer {
 
                     async move {
                         if req.method() == http::Method::GET {
+                            if req.uri().path() == "/metrics" {
+                                return Ok::<_, Infallible>(handle_metrics());
+                            }
                             if let Some(epoch) = parse_manifest_path(req.uri().path()) {
-                                return Ok::<_, Infallible>(
-                                    handle_snapshot_manifest(&snapshot_dir, epoch).await,
+                                let resp = handle_snapshot_manifest(&snapshot_dir, epoch).await;
+                                crate::metrics::record_snapshot_request(
+                                    "manifest",
+                                    resp.status().as_u16(),
                                 );
+                                return Ok::<_, Infallible>(resp);
                             }
                             if let Some(epoch) = parse_snapshot_path(req.uri().path()) {
-                                return Ok::<_, Infallible>(
-                                    handle_snapshot_stream(&snapshot_dir, epoch).await,
+                                let resp = handle_snapshot_stream(&snapshot_dir, epoch).await;
+                                crate::metrics::record_snapshot_request(
+                                    "archive",
+                                    resp.status().as_u16(),
                                 );
+                                return Ok::<_, Infallible>(resp);
                             }
                         }
 
@@ -130,6 +139,15 @@ fn snapshot_archive_path(snapshot_dir: &Path, epoch: u64) -> PathBuf {
 
 fn snapshot_manifest_path(snapshot_dir: &Path, epoch: u64) -> PathBuf {
     snapshot_epoch_dir(snapshot_dir, epoch).join(SNAPSHOT_MANIFEST_FILE_NAME)
+}
+
+/// `GET /metrics`: Prometheus text exposition of the checkpointer's metrics.
+fn handle_metrics() -> http::Response<HttpBody> {
+    http::Response::builder()
+        .status(http::StatusCode::OK)
+        .header(http::header::CONTENT_TYPE, "text/plain; version=0.0.4; charset=utf-8")
+        .body(HttpBody::from(crate::metrics::render()))
+        .expect("response build")
 }
 
 async fn handle_snapshot_manifest(snapshot_dir: &Path, epoch: u64) -> http::Response<HttpBody> {

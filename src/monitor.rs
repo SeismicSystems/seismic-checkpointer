@@ -57,10 +57,12 @@ impl BlockMonitor {
                     if let Err(e) = self.check_and_checkpoint().await {
                         match e {
                             CheckpointerError::Rpc(ref rpc_err) => {
+                                crate::metrics::record_monitor_error("rpc");
                                 tracing::warn!("RPC connection error: {}. Will retry...", rpc_err);
                                 tokio::time::sleep(Duration::from_secs(self.config.retry_interval_secs)).await;
                             }
                             CheckpointerError::Http(ref http_err) => {
+                                crate::metrics::record_monitor_error("http");
                                 tracing::warn!("HTTP connection error: {}. Will retry...", http_err);
                                 tokio::time::sleep(Duration::from_secs(self.config.retry_interval_secs)).await;
                             }
@@ -68,6 +70,7 @@ impl BlockMonitor {
                                 tracing::error!("Checkpoint execution failed: {}. Continuing monitoring...", msg);
                             }
                             _ => {
+                                crate::metrics::record_monitor_error("other");
                                 tracing::error!("Unexpected error in monitoring loop: {}", e);
                                 tokio::time::sleep(Duration::from_secs(self.config.retry_interval_secs)).await;
                             }
